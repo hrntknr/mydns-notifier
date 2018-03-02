@@ -2,8 +2,8 @@
 id = "mydns******"
 password = "***********"
 cron = "@hourly"
-//s m h dom mon dow
-//https://godoc.org/github.com/robfig/cron
+# s m h dom mon dow
+# https://godoc.org/github.com/robfig/cron
 
 [log.slack]
 enable = true
