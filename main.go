@@ -107,23 +107,33 @@ func initConfig(config *config) {
 
 func notify(config config) int {
 	var exitCode = 0
+	var ipv4 string
+	var ipv6 string
 	if config.Notice.IPv4 {
-		ip, err := notifyIP("ipv4", config.Notice.ID, config.Notice.Password)
-		if err == nil {
-			logResult(ip, config.Notice.ID, config.Log)
-		} else {
+		var err error
+		ipv4, err = notifyIP("ipv4", config.Notice.ID, config.Notice.Password)
+		if err != nil {
 			logError(err, config.Notice.ID, config.Log)
 			exitCode = 1
 		}
 	}
 	if config.Notice.IPv6 {
-		ip, err := notifyIP("ipv6", config.Notice.ID, config.Notice.Password)
-		if err == nil {
-			logResult(ip, config.Notice.ID, config.Log)
-		} else {
+		var err error
+		ipv6, err = notifyIP("ipv6", config.Notice.ID, config.Notice.Password)
+		if err != nil {
 			logError(err, config.Notice.ID, config.Log)
 			exitCode = 1
 		}
+	}
+
+	if config.Notice.IPv4 && config.Notice.IPv6 {
+		logResult(fmt.Sprintf("ipv4: %s\nipv6: %s", ipv4, ipv6), config.Notice.ID, config.Log)
+	} else if config.Notice.IPv4 {
+		logResult(fmt.Sprintf("ipv4: %s", ipv4), config.Notice.ID, config.Log)
+	} else if config.Notice.IPv6 {
+		logResult(fmt.Sprintf("ipv6: %s", ipv6), config.Notice.ID, config.Log)
+	} else {
+		logResult("No results.", config.Notice.ID, config.Log)
 	}
 	return exitCode
 }
@@ -135,21 +145,21 @@ func notifyIP(protocol string, id string, password string) (string, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Printf("error: %s", err.Error())
-		return "", err
+		return "error", err
 	}
 
 	req.SetBasicAuth(id, password)
 	res, err := client.Do(req)
 	if err != nil {
 		log.Printf("error: %s", err.Error())
-		return "", err
+		return "error", err
 	}
 	log.Printf("trace: POST %s success", url)
 
 	node, err := xmlpath.ParseHTML(res.Body)
 	if err != nil {
 		log.Printf("error: %s", err.Error())
-		return "", err
+		return "error", err
 	}
 
 	if res.StatusCode != 200 {
@@ -157,7 +167,7 @@ func notifyIP(protocol string, id string, password string) (string, error) {
 		title, _ := path.String(node)
 		err := fmt.Errorf("%s", title)
 		log.Printf("error: %s", err.Error())
-		return "", err
+		return "error", err
 	}
 	path := xmlpath.MustCompile("/html/body/dd[2]")
 	ip, _ := path.String(node)
