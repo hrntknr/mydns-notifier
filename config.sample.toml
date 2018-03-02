@@ -1,0 +1,8 @@
+[notice]
+id = "mydns******"
+password = "***********"
+cron = "00 05 * * *"
+
+[log.slack]
+enable = true
+hookURL = "https://hooks.slack.com/services/*********/*********/************************"
