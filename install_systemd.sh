@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-RELEASE=v1.0.0
+RELEASE=v1.0.1
 
 case "$(uname -m)" in
 	x86_64 ) ARCH="amd64";;
