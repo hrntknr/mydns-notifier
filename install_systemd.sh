@@ -21,7 +21,7 @@ cat << EOS > /etc/mydnsnotifier.toml
 [notice]
 id = "${id}"
 password = "${password}"
-cron = "00 * * * *"
+cron = "@hourly"
 EOS
 
 while true; do
