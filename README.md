@@ -1,5 +1,10 @@
 # mydns-notifier
 
+## install(systemd)
+```sh
+sudo bash -c "$(curl -fsS https://raw.githubusercontent.com/hrntknr/mydns-notifier/master/install_systemd.sh)"
+```
+
 ## usage
 ```
 Usage of mydnsnotifier:
